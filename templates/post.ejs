@@ -1,7 +1,7 @@
 <html>
 <head>
     <%- include('./includes/head', { siteTitle: `${post.title} | ${themeConfig.siteName}` }) %>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha256-V8SV2MO1FUb63Bwht5Wx9x6PVHNa02gv8BgH/uH3ung=" crossorigin="anonymous">
 </head>
 <body>
 <div class="main gt-bg-theme-color-first">
@@ -23,7 +23,28 @@
                     <% }); %>
                 </div>
                 <div class="post-content">
-                    <%- post.content %>
+                    <%- Content();%><%  -%>
+                    <%
+                    function refineContent(str){
+                        indexC = str.indexOf('<img');
+                        while(indexC != -1){
+		                    indexEnd = str.indexOf('>', indexC);
+		                    srcImage = str.indexOf('src', indexC);
+                            var s = "https://blog.woadzs.me"; 
+                            domain = str.substring(srcImage + 5, srcImage + 5 + s.length); 
+		                    if (domain == "https://blog.woadzs.me"){ 
+			                    str = str.substring(0, srcImage + 5) + 'https://cdn.jsdelivr.net/gh/woadzs/woadzs.github.io@master/' + str.substring(str.indexOf("post-images", indexC));
+		                    }
+	                        indexC = str.indexOf('<img', indexEnd);
+                        }
+                        return str;
+                    }
+                    function Content(){
+                        let con= post.content;
+                        con = refineContent(con);
+                        return con;
+                    }
+                    %>
                 </div>
             </article>
         </div>
